@@ -1,5 +1,5 @@
 name: flutter_chat
-description: "A new Flutter project."
+description: 'A new Flutter project.'
 publish_to: 'none'
 version: 0.1.0
 
@@ -13,7 +13,17 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.1
 
 flutter:
   uses-material-design: true
+  fonts:
+    - family: FlutterChatIcons
+      fonts:
+        - asset: assets/fonts/FlutterChatIcons.ttf
+    - family: Gilroy
+      fonts:
+        - asset: assets/fonts/gilroy/Gilroy-Light.otf
+          weight: 300
+        - asset: assets/fonts/gilroy/Gilroy-ExtraBold.otf
+          weight: 900
