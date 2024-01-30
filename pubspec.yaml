@@ -1,4 +1,4 @@
-name: flutter_chat
+name: flutter_messenger
 description: 'A new Flutter project.'
 publish_to: 'none'
 version: 0.1.0
@@ -9,6 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  provider: ^6.0.0
+  uuid: ^4.3.2
 
 dev_dependencies:
   flutter_test:
@@ -20,10 +22,20 @@ flutter:
   fonts:
     - family: FlutterChatIcons
       fonts:
-        - asset: assets/fonts/FlutterChatIcons.ttf
-    - family: Gilroy
+        - asset: assets/fonts/icons/FlutterChatIcons.ttf
+    - family: Gilroy-Thin
       fonts:
-        - asset: assets/fonts/gilroy/Gilroy-Light.otf
-          weight: 300
-        - asset: assets/fonts/gilroy/Gilroy-ExtraBold.otf
-          weight: 900
+        - asset: assets/fonts/gilroy/Gilroy-Thin.ttf
+          weight: 100
+    - family: Gilroy-Medium
+      fonts:
+        - asset: assets/fonts/gilroy/Gilroy-Medium.ttf
+          weight: 500
+    - family: Gilroy-SemiBold
+      fonts:
+        - asset: assets/fonts/gilroy/Gilroy-SemiBold.ttf
+          weight: 600
+    - family: Gilroy-Bold
+      fonts:
+        - asset: assets/fonts/gilroy/Gilroy-Bold.ttf
+          weight: 700
