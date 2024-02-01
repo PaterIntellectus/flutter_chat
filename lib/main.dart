@@ -46,64 +46,45 @@ class MessengerApp extends StatelessWidget {
 }
 
 class MessengerAppState extends ChangeNotifier {
-  final currentUser = User.withId('1', 'Николай', 'Мамедов');
+  final currentUser = User.fullConstructor(
+    '1',
+    'Николай',
+    'Мамедов',
+    true,
+    DateTime(2024, 2, 1, 16, 7, 43),
+  );
 
   final friends = <User>[
-    User.withId('2', 'Виктор', 'Власов'),
-    User.withId('3', 'Саша', 'Алексеев'),
-    User.withId('4', 'Пётр', 'Жаринов'),
-    User.withId('5', 'Алина', 'Жукова'),
+    User.fullConstructor(
+        '2', 'Виктор', 'Власов', true, DateTime(2024, 2, 1, 16, 7, 43)),
+    User.fullConstructor(
+        '3', 'Саша', 'Алексеев', false, DateTime(2024, 2, 1, 0, 7, 20)),
+    User.fullConstructor(
+        '4', 'Пётр', 'Жаринов', false, DateTime(2024, 1, 31, 16, 7, 43)),
+    User.fullConstructor(
+        '5', 'Алина', 'Жукова', true, DateTime(2024, 2, 1, 16, 8, 27)),
+    User.fullConstructor(
+        '6', 'Test', 'Testov', false, DateTime(2024, 2, 1, 19, 8, 27)),
   ];
 
   final chats = <Chat>[
     Chat(
       ['1', '2'],
       <Message>[
-        Message(
-          '2',
-          "Дарова",
-        ),
-        Message(
-          '2',
-          "Ты тут?",
-        ),
-        Message(
-          '2',
-          "Займи денег пожалуйста...",
-        ),
+        Message.withDate('2', "Дарова", DateTime(2024, 2, 1, 20, 17, 11)),
+        Message.withDate('2', "Ты тут?", DateTime(2024, 2, 1)),
+        Message.withDate(
+            '2', "Займи денег пожалуйста...", DateTime(2024, 1, 1, 16, 26, 1)),
       ],
     ),
     Chat(
       ['1', '4'],
       <Message>[
-        Message(
-          '2',
-          "Ты скоро там?",
-        ),
-        Message(
-          '2',
-          "Мы уже ждём",
-        ),
-        Message(
-          '1',
-          "Выхожу",
-        ),
+        Message.withDate(
+            '2', "Ты скоро там?", DateTime(2024, 2, 1, 20, 17, 11)),
+        Message.withDate('2', "Мы уже ждём", DateTime(2024, 2, 1, 20, 17, 12)),
+        Message.withDate('1', "Выхожу", DateTime(2024, 2, 1, 20, 17, 12, 992)),
       ],
     )
-  ];
-
-  final messages = <Message>[
-    Message(
-      '2',
-      "Дарова",
-    ),
-    Message(
-      '2',
-      "Ты тут?",
-    ),
-    Message(
-      '2',
-      "Займи денег пожалуйста...",
-    ),
   ];
 }

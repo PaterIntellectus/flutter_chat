@@ -4,7 +4,9 @@ import 'package:flutter_messenger/main.dart';
 import 'package:flutter_messenger/models/chat.class.dart';
 import 'package:flutter_messenger/models/user.class.dart';
 import 'package:flutter_messenger/screens/chat.screen.dart';
+import 'package:flutter_messenger/widgets/time_difference.widget.dart';
 import 'package:flutter_messenger/widgets/user_avatar.widget.dart';
+import 'package:flutter_messenger/widgets/user_name.widget.dart';
 import 'package:provider/provider.dart';
 
 class ChatList extends StatelessWidget {
@@ -127,11 +129,23 @@ class ChatListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    final appState = context.watch<MessengerAppState>();
+
+    final currentUser = appState.currentUser;
+
+    final chats = appState.chats;
+    final chat = chats.firstWhere(
+      (chat) => (chat.userIds.contains(user.id) &
+          chat.userIds.contains(currentUser.id)),
+      orElse: () => Chat([], []),
+    );
+
     return ListTile(
       leading: UserAvatarWidget(user: user),
       title: UserNameWidget(user: user),
-      subtitle: UserLastMessageWidget(user: user),
-      trailing: const MessageTimeWidget(),
+      subtitle: UserLastMessageWidget(
+          user: user, chats: chats, currentUser: currentUser),
+      trailing: TimeDifferenceWidget(dateTime: chat.getLastMessage().date),
       shape: Border(
         bottom: BorderSide(color: theme.colorScheme.secondary),
       ),
@@ -143,55 +157,32 @@ class ChatListTile extends StatelessWidget {
   }
 }
 
-class MessageTimeWidget extends StatelessWidget {
-  const MessageTimeWidget({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Text(
-      'Message Date',
-      style: TextStyle(
-        fontSize: 12,
-        color: theme.colorScheme.onTertiary,
-      ),
-    );
-  }
-}
-
 class UserLastMessageWidget extends StatelessWidget {
   final User user;
+  final User currentUser;
+  final List<Chat> chats;
+
   const UserLastMessageWidget({
     super.key,
     required this.user,
+    required this.currentUser,
+    required this.chats,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final appState = context.watch<MessengerAppState>();
-
-    final currentUser = appState.currentUser;
-    final chats = appState.chats;
-
     final chat = chats.firstWhere(
-      (chat) {
-        return chat.userIds.contains(user.id) &
-            chat.userIds.contains(currentUser.id);
-      },
-      orElse: () {
-        return Chat([], []);
-      },
-    );
+        (chat) => (chat.userIds.contains(user.id) &
+            chat.userIds.contains(currentUser.id)),
+        orElse: () => Chat([], []));
 
     if (chat.isEmpty()) {
       return const SizedBox.shrink();
     }
 
-    final lastMessage = chat.messages.last;
+    final lastMessage = chat.getLastMessage();
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -220,26 +211,6 @@ class UserLastMessageWidget extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class UserNameWidget extends StatelessWidget {
-  final User user;
-
-  const UserNameWidget({
-    super.key,
-    required this.user,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      '${user.firstName} ${user.lastName}',
-      style: const TextStyle(
-        fontFamily: "Gilroy-SemiBold",
-        color: Colors.black,
-      ),
     );
   }
 }

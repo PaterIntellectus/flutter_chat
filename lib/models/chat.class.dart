@@ -8,6 +8,10 @@ class Chat {
 
   Chat(this.userIds, this.messages);
 
+  Message getLastMessage() {
+    return isEmpty() ? Message.empty() : messages.last;
+  }
+
   bool isEmpty() {
     return messages.isEmpty || userIds.isEmpty;
   }
