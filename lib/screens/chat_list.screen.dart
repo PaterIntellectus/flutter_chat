@@ -37,7 +37,7 @@ class ChatListHeader extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: theme.colorScheme.secondary)),
+        border: Border(bottom: BorderSide(color: theme.colorScheme.primary)),
       ),
       padding: const EdgeInsets.fromLTRB(20, 14, 20, 24),
       child: const Column(
@@ -71,8 +71,8 @@ class ChatListHeaderSearch extends StatelessWidget {
         horizontal: 8,
       ),
       decoration: BoxDecoration(
-        color: theme.colorScheme.secondary,
-        borderRadius: const BorderRadius.all(Radius.circular(20)),
+        color: theme.colorScheme.primary,
+        borderRadius: const BorderRadius.all(Radius.circular(12)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -82,7 +82,7 @@ class ChatListHeaderSearch extends StatelessWidget {
           Icon(
             FlutterChatIcons.search,
             size: 40,
-            color: theme.colorScheme.onSecondary,
+            color: theme.colorScheme.onPrimary,
           ),
           const SizedBox(width: 6),
           Flexible(
@@ -91,7 +91,7 @@ class ChatListHeaderSearch extends StatelessWidget {
                 border: InputBorder.none,
                 hintText: 'Поиск',
                 hintStyle: TextStyle(
-                  color: theme.colorScheme.onSecondary,
+                  color: theme.colorScheme.onPrimary,
                 ),
               ),
             ),
@@ -144,14 +144,24 @@ class ChatListTile extends StatelessWidget {
       leading: UserAvatarWidget(user: user),
       title: UserNameWidget(user: user),
       subtitle: UserLastMessageWidget(
-          user: user, chats: chats, currentUser: currentUser),
-      trailing: TimeDifferenceWidget(dateTime: chat.getLastMessage().date),
+        user: user,
+        chats: chats,
+        currentUser: currentUser,
+      ),
+      trailing: TimeDifferenceWidget(
+        dateTime: chat.getLastMessage().date,
+      ),
       shape: Border(
-        bottom: BorderSide(color: theme.colorScheme.secondary),
+        bottom: BorderSide(color: theme.colorScheme.primary),
       ),
       onTap: () => Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => ChatScreen(user: user)),
+        MaterialPageRoute(
+          builder: (context) => ChatScreen(
+            user: user,
+            chat: chat,
+          ),
+        ),
       ),
     );
   }

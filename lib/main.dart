@@ -12,8 +12,8 @@ void main() {
 class MessengerApp extends StatelessWidget {
   final colorScheme = const ColorScheme(
     brightness: Brightness.light,
-    primary: Color(0xFF9DB7CB),
-    onPrimary: Colors.blue,
+    primary: Color(0xFFEDF2F6),
+    onPrimary: Color(0xFF9DB7CB),
     secondary: Color(0xFFEDF2F6),
     onSecondary: Color(0xFF9DB7CB),
     tertiary: Colors.cyan,
@@ -71,19 +71,22 @@ class MessengerAppState extends ChangeNotifier {
     Chat(
       ['1', '2'],
       <Message>[
-        Message.withDate('2', "Дарова", DateTime(2024, 2, 1, 20, 17, 11)),
-        Message.withDate('2', "Ты тут?", DateTime(2024, 2, 1)),
         Message.withDate(
-            '2', "Займи денег пожалуйста...", DateTime(2024, 1, 1, 16, 26, 1)),
+            '1', "Сделай мне кофе, пожалуйста", DateTime(2022, 1, 27, 21, 41)),
+        Message.withDate('2', "Окей", DateTime(2022, 1, 27, 21, 41, 1)),
+        Message.withDate('1', "Уже сделал?", DateTime.now()),
       ],
     ),
     Chat(
       ['1', '4'],
       <Message>[
         Message.withDate(
-            '2', "Ты скоро там?", DateTime(2024, 2, 1, 20, 17, 11)),
-        Message.withDate('2', "Мы уже ждём", DateTime(2024, 2, 1, 20, 17, 12)),
-        Message.withDate('1', "Выхожу", DateTime(2024, 2, 1, 20, 17, 12, 992)),
+            '1', "Завтра напомни", DateTime(2024, 2, 1, 20, 17, 12, 992)),
+        Message.withDate('2', "ок", DateTime(2024, 2, 1, 20, 17, 12, 992)),
+        Message.withDate(
+            '2', "Ты скоро там?", DateTime(2024, 2, 2, 20, 17, 11)),
+        Message.withDate('2', "Мы уже ждём", DateTime(2024, 2, 2, 20, 17, 12)),
+        Message.withDate('1', "Выхожу", DateTime(2024, 2, 2, 20, 17, 12, 992)),
       ],
     )
   ];

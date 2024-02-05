@@ -1,22 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-String getTimeString(final DateTime dateTime) {
+String getTimeString(
+  final DateTime dateTime, {
+  final bool? isStrict,
+  final FormatType? formatType,
+  required final String defaultText,
+}) {
   final now = DateTime.now();
   final difference = now.difference(dateTime);
 
-  {
-    final differenceInDays = difference.inDays;
+  // debugPrint(now.toString());
+  // debugPrint(dateTime.toString());
+  // debugPrint(difference.toString());
+  // debugPrint(isStrict.toString());
+  // debugPrint(formatType.toString());
+
+  final differenceInDays = difference.inDays;
+  if ((formatType == FormatType.automatic || formatType == FormatType.days)) {
     if (differenceInDays > 0) {
       if (differenceInDays == 1) {
         return 'Вчера';
       }
-      return DateFormat("DD.MM.yy").format(dateTime);
+      return DateFormat("dd.MM.yy").format(dateTime);
     }
   }
 
-  {
-    final differenceInHours = difference.inHours;
+  final differenceInHours = difference.inHours;
+  if ((formatType == FormatType.automatic || formatType == FormatType.hours)) {
     if (differenceInHours > 0) {
       if (differenceInHours == 1) {
         return 'Час назад';
@@ -25,30 +36,64 @@ String getTimeString(final DateTime dateTime) {
     }
   }
 
-  {
-    final differenceInMinutes = difference.inMinutes;
+  final differenceInMinutes = difference.inMinutes;
+  if ((formatType == FormatType.automatic ||
+      formatType == FormatType.minutes)) {
     if (differenceInMinutes > 0) {
       if (differenceInMinutes == 1) {
         return 'Минуту назад';
+      }
+      if (differenceInMinutes < 5) {
+        return "${dateTime.minute} минуты назад";
       }
       return "${dateTime.minute} минут назад";
     }
   }
 
-  return '';
+  final differenceInSeconds = difference.inSeconds;
+  if ((formatType == FormatType.automatic ||
+      formatType == FormatType.seconds)) {
+    if (differenceInSeconds > 0) {
+      if (differenceInSeconds == 1) {
+        return 'Секунду назад';
+      }
+      if (differenceInSeconds < 5) {
+        return "${dateTime.second} секунды назад";
+      }
+      return "${dateTime.second} секунд назад";
+    }
+  }
+
+  return defaultText;
 }
+
+enum FormatType { automatic, days, hours, minutes, seconds }
 
 class TimeDifferenceWidget extends StatelessWidget {
   final DateTime dateTime;
+  final bool isStrict;
+  final FormatType formatType;
+  final String defaultText;
 
-  const TimeDifferenceWidget({super.key, required this.dateTime});
+  const TimeDifferenceWidget({
+    super.key,
+    required this.dateTime,
+    this.isStrict = false,
+    this.defaultText = '',
+    this.formatType = FormatType.automatic,
+  });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Text(
-      getTimeString(dateTime),
+      getTimeString(
+        dateTime,
+        defaultText: defaultText,
+        isStrict: isStrict,
+        formatType: formatType,
+      ),
       style: TextStyle(
         color: theme.colorScheme.onTertiary,
         fontSize: 12,
