@@ -21,8 +21,6 @@ class ChatDateDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("date: ${date.toString()}");
-
     return Row(
       children: [
         const Expanded(
@@ -60,7 +58,7 @@ class ChatFooter extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border(
-          top: BorderSide(width: 1, color: theme.colorScheme.primary),
+          top: BorderSide(width: 1, color: theme.colorScheme.secondary),
         ),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -76,7 +74,7 @@ class ChatFooter extends StatelessWidget {
           Flexible(
             child: Container(
               decoration: BoxDecoration(
-                color: theme.colorScheme.primary,
+                color: theme.colorScheme.secondary,
                 borderRadius: const BorderRadius.all(Radius.circular(12)),
               ),
               child: TextField(
@@ -85,7 +83,7 @@ class ChatFooter extends StatelessWidget {
                   contentPadding: const EdgeInsets.symmetric(horizontal: 12),
                   hintText: "Сообщение",
                   hintStyle: TextStyle(
-                    color: theme.colorScheme.onPrimary,
+                    color: theme.colorScheme.onSecondary,
                   ),
                 ),
               ),
@@ -112,18 +110,27 @@ class ChatMessageList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final messages = chat.messages;
-    debugPrint(messages.length.toString());
 
     return Expanded(
       child: GroupedListView(
-        sort: false,
+        padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
         elements: messages,
+        sort: false,
         groupBy: (message) => DateFormat("dd.MM.yy").format(message.date),
-        groupHeaderBuilder: (Message message) => ChatDateDivider(
-          date: message.date,
+        groupHeaderBuilder: (Message message) => Column(
+          children: [
+            ChatDateDivider(
+              date: message.date,
+            ),
+            const SizedBox(height: 20)
+          ],
         ),
-        itemBuilder: (context, element) => MessageBox(
-          message: element,
+        itemBuilder: (context, element) => Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            MessageBox(message: element),
+            const SizedBox(height: 20),
+          ],
         ),
       ),
     );
@@ -156,7 +163,7 @@ class ChatScreen extends StatelessWidget {
         ),
         title: Row(
           children: [
-            UserAvatarWidget(user: user),
+            UserAvatar(user: user),
             const SizedBox(width: 12),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -206,7 +213,6 @@ class MessageBox extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.all(10),
-      width: 100,
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(16),
@@ -216,7 +222,7 @@ class MessageBox extends StatelessWidget {
         ),
         color: isCurrentUserMessage
             ? const Color(0xFF3CED78)
-            : theme.colorScheme.primary,
+            : theme.colorScheme.secondary,
       ),
       child: Row(
         mainAxisAlignment: (isCurrentUserMessage)
@@ -224,13 +230,32 @@ class MessageBox extends StatelessWidget {
             : MainAxisAlignment.start,
         children: [
           Text(
-            message.message,
+            message.text,
             style: TextStyle(
                 color: isCurrentUserMessage
                     ? const Color(0xFF00521C)
                     : theme.colorScheme.onSurface),
           ),
-          Text(DateFormat("HH:mm").format(message.date))
+          const SizedBox(width: 12),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                DateFormat("HH:mm").format(message.date),
+                style: const TextStyle(fontSize: 12),
+              ),
+              const SizedBox(width: 4),
+              isCurrentUserMessage
+                  ? Icon(
+                      message.status == MessageStatus.read
+                          ? FlutterChatIcons.read
+                          : FlutterChatIcons.unread,
+                      size: 12,
+                      color: const Color(0xFF00521C),
+                    )
+                  : const SizedBox.shrink(),
+            ],
+          )
         ],
       ),
     );

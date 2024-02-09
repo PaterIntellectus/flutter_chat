@@ -19,7 +19,7 @@ class StandardDivider extends StatelessWidget {
       indent: indent,
       endIndent: endIndent,
       thickness: thickness,
-      color: theme.colorScheme.primary,
+      color: theme.colorScheme.secondary,
       height: 1,
     );
   }

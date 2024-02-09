@@ -16,12 +16,72 @@ class ChatList extends StatelessWidget {
   Widget build(BuildContext context) {
     final appState = context.watch<MessengerAppState>();
     final friends = appState.friends;
+    final filterText = appState.friendsFilterText;
+
+    final filteredFriends = filterText.isEmpty
+        ? friends
+        : friends.where((friend) => friend.nameContains(filterText)).toList();
 
     return Expanded(
       child: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         children: [
-          for (final friend in friends) ChatListTile(user: friend),
+          for (final friend in filteredFriends) ChatListTile(user: friend),
+        ],
+      ),
+    );
+  }
+}
+
+class ChatListFriendsFilter extends StatelessWidget {
+  const ChatListFriendsFilter({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    final appState = context.watch<MessengerAppState>();
+
+    final filterController = TextEditingController(
+      text: appState.friendsFilterText,
+    );
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 8,
+      ),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.secondary,
+        borderRadius: const BorderRadius.all(Radius.circular(12)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(
+            FlutterChatIcons.search,
+            size: 40,
+            color: theme.colorScheme.onSecondary,
+          ),
+          const SizedBox(width: 6),
+          Flexible(
+            child: TextField(
+              controller: filterController,
+              onEditingComplete: () => appState.setFriendsFilterText(
+                filterController.text,
+              ),
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                hintText: 'Поиск',
+                hintStyle: TextStyle(
+                  color: theme.colorScheme.onSecondary,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -37,7 +97,7 @@ class ChatListHeader extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: theme.colorScheme.primary)),
+        border: Border(bottom: BorderSide(color: theme.colorScheme.secondary)),
       ),
       padding: const EdgeInsets.fromLTRB(20, 14, 20, 24),
       child: const Column(
@@ -50,52 +110,7 @@ class ChatListHeader extends StatelessWidget {
               fontFamily: "Gilroy-SemiBold",
             ),
           ),
-          ChatListHeaderSearch()
-        ],
-      ),
-    );
-  }
-}
-
-class ChatListHeaderSearch extends StatelessWidget {
-  const ChatListHeaderSearch({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 8,
-      ),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.primary,
-        borderRadius: const BorderRadius.all(Radius.circular(12)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Icon(
-            FlutterChatIcons.search,
-            size: 40,
-            color: theme.colorScheme.onPrimary,
-          ),
-          const SizedBox(width: 6),
-          Flexible(
-            child: TextField(
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: 'Поиск',
-                hintStyle: TextStyle(
-                  color: theme.colorScheme.onPrimary,
-                ),
-              ),
-            ),
-          ),
+          ChatListFriendsFilter()
         ],
       ),
     );
@@ -141,7 +156,7 @@ class ChatListTile extends StatelessWidget {
     );
 
     return ListTile(
-      leading: UserAvatarWidget(user: user),
+      leading: UserAvatar(user: user),
       title: UserNameWidget(user: user),
       subtitle: UserLastMessageWidget(
         user: user,
@@ -152,7 +167,7 @@ class ChatListTile extends StatelessWidget {
         dateTime: chat.getLastMessage().date,
       ),
       shape: Border(
-        bottom: BorderSide(color: theme.colorScheme.primary),
+        bottom: BorderSide(color: theme.colorScheme.secondary),
       ),
       onTap: () => Navigator.push(
         context,
@@ -202,17 +217,14 @@ class UserLastMessageWidget extends StatelessWidget {
             if (lastMessage.userId != currentUser.id) {
               return const SizedBox.shrink();
             }
-            return const Padding(
-              padding: EdgeInsets.only(right: 4.0),
-              child: Text(
-                'Вы:',
-              ),
+            return const Text(
+              'Вы: ',
             );
           },
         ),
         Expanded(
           child: Text(
-            lastMessage.message,
+            lastMessage.text,
             style: TextStyle(
               color: theme.colorScheme.onTertiary,
             ),

@@ -16,7 +16,7 @@ class ActionIconButtonWidget extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: theme.colorScheme.primary,
+        color: theme.colorScheme.secondary,
         borderRadius: const BorderRadius.all(Radius.circular(12)),
       ),
       child: IconButton(

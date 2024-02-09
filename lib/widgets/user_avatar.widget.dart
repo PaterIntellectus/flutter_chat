@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_messenger/models/user.class.dart';
 
-class UserAvatarWidget extends StatelessWidget {
+class UserAvatar extends StatelessWidget {
   final User user;
 
-  const UserAvatarWidget({
+  const UserAvatar({
     super.key,
     required this.user,
   });

@@ -24,5 +24,12 @@ class User {
 
   logout() {
     isOnline = false;
+    lastLogout = DateTime.now();
+  }
+
+  bool nameContains(final String pattern) {
+    final lowerCasePattern = pattern.toLowerCase();
+    return firstName.toLowerCase().contains(lowerCasePattern) ||
+        lastName.toLowerCase().contains(lowerCasePattern);
   }
 }
