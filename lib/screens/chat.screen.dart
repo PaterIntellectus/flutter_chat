@@ -11,7 +11,7 @@ import 'package:flutter_messenger/widgets/time_difference.widget.dart';
 import 'package:flutter_messenger/widgets/user_avatar.widget.dart';
 import 'package:flutter_messenger/widgets/user_name.widget.dart';
 import 'package:grouped_list/grouped_list.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' as intl;
 import 'package:provider/provider.dart';
 
 class ChatDateDivider extends StatelessWidget {
@@ -116,7 +116,7 @@ class ChatMessageList extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
         elements: messages,
         sort: false,
-        groupBy: (message) => DateFormat("dd.MM.yy").format(message.date),
+        groupBy: (message) => intl.DateFormat("dd.MM.yy").format(message.date),
         groupHeaderBuilder: (Message message) => Column(
           children: [
             ChatDateDivider(
@@ -149,6 +149,7 @@ class ChatScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         systemOverlayStyle: SystemUiOverlayStyle(
           statusBarColor: theme.colorScheme.background,
           statusBarIconBrightness: Brightness.dark,
@@ -211,37 +212,55 @@ class MessageBox extends StatelessWidget {
 
     final isCurrentUserMessage = message.userId == currentUser.id;
 
-    return Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
-          bottomRight: Radius.zero,
-          bottomLeft: Radius.circular(16),
-        ),
-        color: isCurrentUserMessage
-            ? const Color(0xFF3CED78)
-            : theme.colorScheme.secondary,
-      ),
-      child: Row(
-        mainAxisAlignment: (isCurrentUserMessage)
-            ? MainAxisAlignment.end
-            : MainAxisAlignment.start,
-        children: [
-          Text(
-            message.text,
-            style: TextStyle(
-                color: isCurrentUserMessage
-                    ? const Color(0xFF00521C)
-                    : theme.colorScheme.onSurface),
+    return Row(
+      textDirection:
+          isCurrentUserMessage ? TextDirection.rtl : TextDirection.ltr,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        CustomPaint(
+          size: const Size(12, 21),
+          painter: MessageBoxTail(
+            color: isCurrentUserMessage
+                ? const Color(0xFF3CED78)
+                : theme.colorScheme.secondary,
+            isCurrentUserMessage: isCurrentUserMessage,
           ),
-          const SizedBox(width: 12),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
+        ),
+        Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topLeft: const Radius.circular(21),
+              topRight: const Radius.circular(21),
+              bottomRight: isCurrentUserMessage
+                  ? Radius.zero
+                  : const Radius.circular(21),
+              bottomLeft: isCurrentUserMessage
+                  ? const Radius.circular(21)
+                  : Radius.zero,
+            ),
+            color: isCurrentUserMessage
+                ? const Color(0xFF3CED78)
+                : theme.colorScheme.secondary,
+          ),
+          child: Row(
             children: [
+              Container(
+                constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width * 0.7,
+                    minWidth: 10),
+                child: Text(
+                  message.text,
+                  style: TextStyle(
+                    color: isCurrentUserMessage
+                        ? const Color(0xFF00521C)
+                        : theme.colorScheme.onSurface,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
               Text(
-                DateFormat("HH:mm").format(message.date),
+                intl.DateFormat("HH:mm").format(message.date),
                 style: const TextStyle(fontSize: 12),
               ),
               const SizedBox(width: 4),
@@ -253,11 +272,53 @@ class MessageBox extends StatelessWidget {
                       size: 12,
                       color: const Color(0xFF00521C),
                     )
-                  : const SizedBox.shrink(),
+                  : const SizedBox.shrink()
             ],
-          )
-        ],
-      ),
+          ),
+        ),
+      ],
     );
   }
+}
+
+class MessageBoxTail extends CustomPainter {
+  final Color color;
+  final bool isCurrentUserMessage;
+
+  MessageBoxTail(
+      {this.color = Colors.black, this.isCurrentUserMessage = false});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 2;
+
+    Path path = Path();
+    if (isCurrentUserMessage) {
+      path.moveTo(0, 0);
+      path.conicTo(
+        size.width * 0.1,
+        size.height * 0.8,
+        size.width,
+        size.height,
+        1,
+      );
+      path.lineTo(0, size.height);
+    } else {
+      path.moveTo(size.width, 0);
+      path.conicTo(
+        size.width * 0.9,
+        size.height * 0.8,
+        0,
+        size.height,
+        1,
+      );
+      path.lineTo(size.width, size.height);
+    }
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }

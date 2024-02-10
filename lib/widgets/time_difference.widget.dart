@@ -64,10 +64,18 @@ String getTimeString(
     }
   }
 
+  final differenceInMilliseconds = difference.inMilliseconds;
+  if ((formatType == FormatType.automatic ||
+      formatType == FormatType.milliseconds)) {
+    if (differenceInMilliseconds > 100) {
+      return "Только что";
+    }
+  }
+
   return defaultText;
 }
 
-enum FormatType { automatic, days, hours, minutes, seconds }
+enum FormatType { automatic, days, hours, minutes, seconds, milliseconds }
 
 class TimeDifferenceWidget extends StatelessWidget {
   final DateTime dateTime;
