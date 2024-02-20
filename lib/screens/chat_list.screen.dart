@@ -34,7 +34,9 @@ class ChatList extends StatelessWidget {
 }
 
 class ChatListFriendsFilter extends StatelessWidget {
-  const ChatListFriendsFilter({
+  final _filterController = TextEditingController();
+
+  ChatListFriendsFilter({
     super.key,
   });
 
@@ -44,8 +46,9 @@ class ChatListFriendsFilter extends StatelessWidget {
 
     final appState = context.watch<MessengerAppState>();
 
-    final filterController = TextEditingController(
-      text: appState.friendsFilterText,
+    _filterController.text = appState.friendsFilterText;
+    _filterController.selection = TextSelection.fromPosition(
+      TextPosition(offset: _filterController.text.length),
     );
 
     return Container(
@@ -69,9 +72,9 @@ class ChatListFriendsFilter extends StatelessWidget {
           const SizedBox(width: 6),
           Flexible(
             child: TextField(
-              controller: filterController,
+              controller: _filterController,
               onEditingComplete: () => appState.setFriendsFilterText(
-                filterController.text,
+                _filterController.text,
               ),
               decoration: InputDecoration(
                 border: InputBorder.none,
@@ -100,10 +103,10 @@ class ChatListHeader extends StatelessWidget {
         border: Border(bottom: BorderSide(color: theme.colorScheme.secondary)),
       ),
       padding: const EdgeInsets.fromLTRB(20, 14, 20, 24),
-      child: const Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             "Чаты",
             style: TextStyle(
               fontSize: 32.0,
@@ -167,14 +170,15 @@ class ChatListTile extends StatelessWidget {
         dateTime: chat.getLastMessage().date,
       ),
       shape: Border(
-        bottom: BorderSide(color: theme.colorScheme.secondary),
+        bottom: BorderSide(
+          color: theme.colorScheme.secondary,
+        ),
       ),
       onTap: () => Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => ChatScreen(
             user: user,
-            chat: chat,
           ),
         ),
       ),
@@ -203,7 +207,7 @@ class UserLastMessageWidget extends StatelessWidget {
             chat.userIds.contains(currentUser.id)),
         orElse: () => Chat([], []));
 
-    if (chat.isEmpty()) {
+    if (chat.isEmpty) {
       return const SizedBox.shrink();
     }
 
@@ -224,7 +228,7 @@ class UserLastMessageWidget extends StatelessWidget {
         ),
         Expanded(
           child: Text(
-            lastMessage.text,
+            lastMessage.text ?? '',
             style: TextStyle(
               color: theme.colorScheme.onTertiary,
             ),

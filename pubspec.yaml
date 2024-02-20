@@ -12,7 +12,7 @@ dependencies:
   provider: ^6.0.0
   uuid: ^4.3.2
   intl:
-  grouped_list: ^5.1.2
+  image_picker:
 
 dev_dependencies:
   flutter_test:

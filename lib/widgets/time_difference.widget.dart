@@ -95,6 +95,9 @@ class TimeDifferenceWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    // final Duration timerDuration = ;
+    // Timer.periodic(timerDuration, (Timer t) => setState(() {}));
+
     return Text(
       getTimeString(
         dateTime,
